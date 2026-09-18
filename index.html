@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Noto Sans TC',sans-serif;color:#1f2937;-webkit-font-smoothing:antialiased;background:#eef4ff}
+a{color:#2563eb;text-decoration:none}
+a:hover{color:#1d4ed8}
+button{font-family:inherit;cursor:pointer}
+input,textarea{font-family:inherit}
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:20px}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes dash{to{stroke-dashoffset:-40}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
+.rise{animation:slideUp .45s cubic-bezier(.2,.9,.3,1) both}
+</style>
+</helmet>
+<div style="min-height:100vh;background:radial-gradient(1200px 600px at 15% -5%,#dbeafe 0%,transparent 55%),radial-gradient(1000px 500px at 100% 0%,#fde68a55 0%,transparent 50%),linear-gradient(180deg,#eef4ff 0%,#f6f9ff 100%)">
+
+  <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);background:rgba(255,255,255,.82);border-bottom:1px solid #e5ecff;box-shadow:0 6px 20px -14px rgba(30,64,175,.5)">
+      <div style="max-width:1120px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div onClick="{{ goHome }}" style="display:flex;align-items:center;gap:11px;cursor:pointer">
+          <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#2563eb,#22c55e);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 16px -6px #2563eb88">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="5" fill="#fff"/><circle cx="12" cy="7" r="2.3" fill="#ef4444"/><circle cx="12" cy="12" r="2.3" fill="#f59e0b"/><circle cx="12" cy="17" r="2.3" fill="#22c55e"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:900;font-size:18px;letter-spacing:.5px;line-height:1.1">楊梅高中交通安全學習網</div>
+            <div style="font-size:12px;color:#64748b;font-weight:500">YMHS Traffic Safety Learning</div>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="display:flex;align-items:center;gap:9px;background:#eff6ff;border:1px solid #dbeafe;border-radius:999px;padding:6px 8px 6px 14px">
+          <span style="font-size:14px;font-weight:700;color:#1e40af">{{ studentLabel }}</span>
+        </div>
+        <button onClick="{{ toggleMute }}" title="音效開關" style="width:40px;height:40px;border-radius:12px;border:1px solid #e5ecff;background:#fff;font-size:18px;display:flex;align-items:center;justify-content:center">{{ muteIcon }}</button>
+        <button onClick="{{ logout }}" style="border:1px solid #fecaca;background:#fff5f5;color:#dc2626;border-radius:12px;padding:9px 14px;font-weight:700;font-size:14px">登出</button>
+      </div>
+      <div style="max-width:1120px;margin:0 auto;padding:0 12px 12px;display:flex;gap:8px;overflow-x:auto">
+        <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="6">
+          <button onClick="{{ nav.onClick }}" style="{{ nav.style }}">
+            <span style="font-size:18px">{{ nav.icon }}</span>
+            <span>{{ nav.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="max-width:1120px;margin:0 auto;padding:22px 18px 80px">
+
+    <!-- ============ LOGIN ============ -->
+    <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+      <div style="min-height:78vh;display:flex;align-items:center;justify-content:center">
+        <div class="rise" style="width:100%;max-width:470px;background:#fff;border-radius:30px;padding:38px 32px;box-shadow:0 40px 80px -30px rgba(37,99,235,.45);border:1px solid #eef2ff">
+          <div style="display:flex;justify-content:center;margin-bottom:6px">
+            <div style="width:78px;height:78px;border-radius:24px;background:linear-gradient(135deg,#2563eb,#22c55e);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 30px -12px #2563eb99;animation:floaty 3.5s ease-in-out infinite">
+              <svg width="42" height="42" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="5" fill="#fff"/><circle cx="12" cy="7" r="2.3" fill="#ef4444"/><circle cx="12" cy="12" r="2.3" fill="#f59e0b"/><circle cx="12" cy="17" r="2.3" fill="#22c55e"/></svg>
+            </div>
+          </div>
+          <h1 style="text-align:center;font-size:25px;font-weight:900;margin-top:16px;letter-spacing:.5px">楊梅高中交通安全學習網</h1>
+          <p style="text-align:center;color:#64748b;margin-top:8px;font-size:15px;line-height:1.6">歡迎高一同學！請先填寫基本資料，<br>開始今天的交通安全學習之旅 🚦</p>
+          <div style="margin-top:26px;display:flex;flex-direction:column;gap:16px">
+            <label style="font-weight:700;font-size:15px;color:#334155">班級
+              <input value="{{ formKlass }}" onInput="{{ onKlass }}" placeholder="例如：一年5班 / 105" style="width:100%;margin-top:7px;border:2px solid #e2e8f0;border-radius:14px;padding:13px 15px;font-size:16px;outline:none" style-focus="border-color:#2563eb"/>
+            </label>
+            <label style="font-weight:700;font-size:15px;color:#334155">座號
+              <input value="{{ formSeat }}" onInput="{{ onSeat }}" inputmode="numeric" placeholder="例如：21" style="width:100%;margin-top:7px;border:2px solid #e2e8f0;border-radius:14px;padding:13px 15px;font-size:16px;outline:none" style-focus="border-color:#2563eb"/>
+            </label>
+            <label style="font-weight:700;font-size:15px;color:#334155">姓名
+              <input value="{{ formName }}" onInput="{{ onName }}" placeholder="請輸入姓名" style="width:100%;margin-top:7px;border:2px solid #e2e8f0;border-radius:14px;padding:13px 15px;font-size:16px;outline:none" style-focus="border-color:#2563eb"/>
+            </label>
+          </div>
+          <button onClick="{{ doLogin }}" style="{{ loginBtnStyle }}">開始學習 →</button>
+          <p style="text-align:center;color:#94a3b8;font-size:12.5px;margin-top:14px;line-height:1.6">資料僅存在你的裝置中，用於記錄學習歷程。<br>完成測驗後可選擇上傳成績至老師的試算表。</p>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ HOME ============ -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <div style="background:linear-gradient(115deg,#2563eb 0%,#4f46e5 55%,#7c3aed 100%);border-radius:28px;padding:34px 30px;color:#fff;position:relative;overflow:hidden;box-shadow:0 26px 50px -24px #4338ca">
+          <div style="position:absolute;right:-30px;top:-30px;font-size:170px;opacity:.13">🚸</div>
+          <div style="position:relative;z-index:2">
+            <div style="font-size:14px;font-weight:600;opacity:.9;letter-spacing:1px">HELLO，{{ formName }} 同學</div>
+            <h2 style="font-size:29px;font-weight:900;margin-top:8px;line-height:1.3;max-width:640px">安全上路，從認識規則開始 🚦<br>今天也一起把交通安全學起來吧！</h2>
+            <div style="display:flex;gap:22px;margin-top:22px;flex-wrap:wrap">
+              <div><div style="font-size:32px;font-weight:900;font-family:Fredoka">{{ learnPct }}%</div><div style="font-size:13px;opacity:.85">教材閱讀進度</div></div>
+              <div><div style="font-size:32px;font-weight:900;font-family:Fredoka">{{ gamesPlayed }}</div><div style="font-size:13px;opacity:.85">已挑戰遊戲</div></div>
+              <div><div style="font-size:32px;font-weight:900;font-family:Fredoka">{{ quizBest }}</div><div style="font-size:13px;opacity:.85">測驗最佳成績</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+          <sc-for list="{{ homeCards }}" as="c" hint-placeholder-count="5">
+            <div onClick="{{ c.onClick }}" style="{{ c.style }}" style-hover="transform:translateY(-6px);box-shadow:0 26px 44px -22px rgba(30,41,59,.4)">
+              <div style="{{ c.iconWrap }}">{{ c.icon }}</div>
+              <div style="font-size:20px;font-weight:900;margin-top:14px">{{ c.title }}</div>
+              <div style="font-size:14px;color:#64748b;margin-top:6px;line-height:1.6">{{ c.desc }}</div>
+              <div style="{{ c.tagStyle }}">{{ c.tag }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:26px;background:#fffbeb;border:1px solid #fde68a;border-radius:22px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start">
+          <div style="font-size:34px;line-height:1">💡</div>
+          <div>
+            <div style="font-weight:900;font-size:17px;color:#92400e">今日安全小提醒</div>
+            <div style="color:#78350f;margin-top:6px;font-size:15px;line-height:1.7">{{ dailyTip }}</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ LEARN LIST ============ -->
+    <sc-if value="{{ isLearn }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <h2 style="font-size:26px;font-weight:900">📚 交通安全教材</h2>
+            <p style="color:#64748b;margin-top:6px;font-size:15px">十個單元，約兩小時課程。點開每個單元閱讀，讀完可標記完成。</p>
+          </div>
+          <div style="min-width:200px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#475569;margin-bottom:6px"><span>閱讀進度</span><span>{{ learnPct }}%</span></div>
+            <div style="height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden"><div style="{{ learnBarStyle }}"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px">
+          <sc-for list="{{ unitCards }}" as="u" hint-placeholder-count="10">
+            <div onClick="{{ u.onClick }}" style="{{ u.style }}" style-hover="transform:translateY(-5px);box-shadow:0 24px 40px -22px rgba(30,41,59,.4)">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="{{ u.iconWrap }}">{{ u.icon }}</div>
+                <div style="{{ u.badgeStyle }}">{{ u.badge }}</div>
+              </div>
+              <div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:14px;font-family:Fredoka">UNIT {{ u.no }}</div>
+              <div style="font-size:18px;font-weight:900;margin-top:2px;line-height:1.35">{{ u.title }}</div>
+              <div style="font-size:13.5px;color:#64748b;margin-top:8px;line-height:1.6">{{ u.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ LEARN DETAIL ============ -->
+    <sc-if value="{{ isLearnDetail }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <button onClick="{{ backToLearn }}" style="border:none;background:#fff;border:1px solid #e5ecff;border-radius:12px;padding:9px 15px;font-weight:700;font-size:14px;color:#334155">← 返回單元列表</button>
+        <div style="margin-top:16px;border-radius:26px;overflow:hidden;box-shadow:0 26px 50px -28px rgba(30,41,59,.45)">
+          <div style="{{ unitHeaderStyle }}">
+            <div style="font-size:64px;line-height:1">{{ curUnit.icon }}</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;opacity:.9;font-family:Fredoka">UNIT {{ curUnit.no }} / 10</div>
+              <h2 style="font-size:27px;font-weight:900;margin-top:4px;line-height:1.3">{{ curUnit.title }}</h2>
+              <div style="font-size:15px;opacity:.95;margin-top:6px">{{ curUnit.sub }}</div>
+            </div>
+          </div>
+          <div style="background:#fff;padding:28px 26px">
+            <p style="font-size:16px;line-height:1.9;color:#334155">{{ curUnit.intro }}</p>
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">
+              <sc-for list="{{ curUnitPoints }}" as="p" hint-placeholder-count="4">
+                <div style="display:flex;gap:14px;align-items:flex-start;background:#f8fafc;border:1px solid #eef2f7;border-radius:16px;padding:16px 18px">
+                  <div style="{{ p.numStyle }}">{{ p.n }}</div>
+                  <div>
+                    <div style="font-weight:800;font-size:16.5px;color:#1e293b">{{ p.title }}</div>
+                    <div style="font-size:15px;color:#475569;margin-top:4px;line-height:1.75">{{ p.body }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-top:20px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:16px;padding:18px 20px">
+              <div style="font-weight:900;color:#047857;font-size:15px">✅ 本單元重點</div>
+              <div style="color:#065f46;margin-top:6px;font-size:15px;line-height:1.75">{{ curUnit.key }}</div>
+            </div>
+            <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+              <button onClick="{{ markRead }}" style="{{ markReadStyle }}">{{ markReadLabel }}</button>
+              <button onClick="{{ nextUnit }}" style="border:1px solid #e5ecff;background:#fff;color:#2563eb;border-radius:14px;padding:13px 22px;font-weight:800;font-size:15px">下一單元 →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ GAMES HUB ============ -->
+    <sc-if value="{{ isGames }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <h2 style="font-size:26px;font-weight:900">🎮 遊戲練習場</h2>
+        <p style="color:#64748b;margin-top:6px;font-size:15px">六款互動小遊戲，適合手機、平板與教室大觸屏。反覆練習，把安全變成直覺！</p>
+        <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+          <sc-for list="{{ gameCards }}" as="g" hint-placeholder-count="6">
+            <div onClick="{{ g.onClick }}" style="{{ g.style }}" style-hover="transform:translateY(-6px) rotate(-.5deg);box-shadow:0 26px 44px -22px rgba(30,41,59,.45)">
+              <div style="font-size:44px">{{ g.icon }}</div>
+              <div style="font-size:19px;font-weight:900;margin-top:10px">{{ g.title }}</div>
+              <div style="font-size:13.5px;color:#64748b;margin-top:6px;line-height:1.6">{{ g.desc }}</div>
+              <div style="{{ g.bestStyle }}">{{ g.best }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ GAME PLAY ============ -->
+    <sc-if value="{{ isGamePlay }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <button onClick="{{ backToGames }}" style="border:1px solid #e5ecff;background:#fff;border-radius:12px;padding:9px 15px;font-weight:700;font-size:14px;color:#334155">← 返回遊戲場</button>
+        <div style="margin-top:14px">{{ gameBoard }}</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ QUIZ ============ -->
+    <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <div style="background:linear-gradient(115deg,#059669,#10b981);border-radius:24px;padding:26px 28px;color:#fff;box-shadow:0 22px 44px -24px #047857">
+          <h2 style="font-size:25px;font-weight:900">📝 交通安全測驗（10 題）</h2>
+          <p style="margin-top:6px;font-size:15px;opacity:.95">選出正確答案，作答完成後按「交卷」看成績與詳解。</p>
+        </div>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+          <sc-for list="{{ quizView }}" as="q" hint-placeholder-count="10">
+            <div style="background:#fff;border-radius:20px;padding:22px 22px;box-shadow:0 14px 30px -22px rgba(30,41,59,.5);border:1px solid #eef2f7">
+              <div style="display:flex;gap:11px;align-items:flex-start">
+                <div style="width:30px;height:30px;flex:none;border-radius:10px;background:#ecfdf5;color:#059669;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:Fredoka">{{ q.no }}</div>
+                <div style="font-size:16.5px;font-weight:700;line-height:1.6;color:#1e293b">{{ q.text }}</div>
+              </div>
+              <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+                <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="4">
+                  <div onClick="{{ o.onClick }}" style="{{ o.style }}">
+                    <div style="{{ o.markStyle }}">{{ o.mark }}</div>
+                    <div style="flex:1">{{ o.text }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <sc-if value="{{ q.showExp }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px;background:#f8fafc;border-left:4px solid #10b981;border-radius:8px;padding:12px 14px;font-size:14.5px;color:#475569;line-height:1.7"><b style="color:#059669">詳解：</b>{{ q.exp }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ quizNotDone }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ submitQuiz }}" style="{{ submitQuizStyle }}">交卷看成績（已作答 {{ quizAnswered }}/10）</button>
+        </sc-if>
+
+        <sc-if value="{{ quizDone }}" hint-placeholder-val="{{ false }}">
+          <div class="rise" style="margin-top:22px;background:#fff;border-radius:24px;padding:28px;text-align:center;box-shadow:0 22px 44px -26px rgba(30,41,59,.5);border:1px solid #eef2f7">
+            <div style="font-size:56px;line-height:1">{{ quizEmoji }}</div>
+            <div style="font-size:22px;font-weight:900;margin-top:8px">{{ quizResultTitle }}</div>
+            <div style="font-size:15px;color:#64748b;margin-top:6px">你答對了</div>
+            <div style="font-size:52px;font-weight:900;color:#059669;font-family:Fredoka;margin-top:2px">{{ quizCorrect }} / 10</div>
+            <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <button onClick="{{ retakeQuiz }}" style="border:1px solid #e5ecff;background:#fff;color:#2563eb;border-radius:14px;padding:12px 20px;font-weight:800;font-size:15px">重新作答</button>
+              <button onClick="{{ goHistory }}" style="border:none;background:#2563eb;color:#fff;border-radius:14px;padding:12px 20px;font-weight:800;font-size:15px">前往上傳成績 →</button>
+            </div>
+            <sc-if value="{{ hasWrong }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:20px;text-align:left;background:#fef2f2;border:1px solid #fecaca;border-radius:16px;padding:16px 18px">
+                <div style="font-weight:900;color:#dc2626">❌ 錯題清單（{{ wrongCount }} 題）</div>
+                <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ wrongList }}" as="w" hint-placeholder-count="2">
+                    <div style="font-size:14.5px;color:#7f1d1d;line-height:1.6"><b>第 {{ w.no }} 題：</b>{{ w.text }} <span style="color:#059669;font-weight:700">正解：{{ w.ans }}</span></div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ============ ASSISTANT ============ -->
+    <sc-if value="{{ isAssistant }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <h2 style="font-size:26px;font-weight:900">🤖 AI 交通安全小助手</h2>
+            <p style="color:#64748b;margin-top:6px;font-size:15px">對教材有疑問嗎？直接問我吧！我會用高中生聽得懂的方式回答。</p>
+          </div>
+          <button onClick="{{ downloadChat }}" style="border:1px solid #e5ecff;background:#fff;color:#2563eb;border-radius:12px;padding:10px 16px;font-weight:700;font-size:14px">⬇ 下載對話</button>
+        </div>
+        <div style="margin-top:16px;background:#fff;border-radius:22px;border:1px solid #eef2f7;box-shadow:0 18px 40px -28px rgba(30,41,59,.5);overflow:hidden;display:flex;flex-direction:column;height:min(62vh,560px)">
+          <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <sc-for list="{{ chatView }}" as="m" hint-placeholder-count="1">
+              <div style="{{ m.rowStyle }}">
+                <div style="{{ m.bubbleStyle }}">{{ m.content }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ chatLoading }}" hint-placeholder-val="{{ false }}">
+              <div style="align-self:flex-start;background:#f1f5f9;border-radius:16px;padding:14px 18px;color:#64748b;font-size:15px">小助手思考中<span style="animation:blink 1s infinite">…</span></div>
+            </sc-if>
+          </div>
+          <div style="border-top:1px solid #eef2f7;padding:12px 14px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+              <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
+                <button onClick="{{ s.onClick }}" style="border:1px solid #dbeafe;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600">{{ s.text }}</button>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px">
+              <input value="{{ chatInput }}" onInput="{{ onChatInput }}" onKeyDown="{{ onChatKey }}" placeholder="輸入你的交通安全問題…" style="flex:1;border:2px solid #e2e8f0;border-radius:14px;padding:13px 15px;font-size:15px;outline:none" style-focus="border-color:#2563eb"/>
+              <button onClick="{{ sendChat }}" style="{{ sendStyle }}">送出</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ HISTORY ============ -->
+    <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ false }}">
+      <div class="rise">
+        <h2 style="font-size:26px;font-weight:900">📈 我的學習歷程</h2>
+        <p style="color:#64748b;margin-top:6px;font-size:15px">這裡記錄你的學習過程，可下載存檔，也可以把測驗成績上傳給老師。</p>
+
+        <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px">
+          <sc-for list="{{ statCards }}" as="s" hint-placeholder-count="4">
+            <div style="{{ s.style }}">
+              <div style="font-size:13px;font-weight:700;opacity:.9">{{ s.label }}</div>
+              <div style="font-size:30px;font-weight:900;font-family:Fredoka;margin-top:4px">{{ s.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top:22px;background:linear-gradient(120deg,#1e293b,#334155);border-radius:22px;padding:24px 26px;color:#fff">
+          <div style="font-weight:900;font-size:18px">☁️ 上傳成績到老師的 Google 試算表</div>
+          <div style="font-size:14px;opacity:.85;margin-top:6px;line-height:1.7">送出後會把「填答日期時間、班級、座號、姓名、答對題數」寫入試算表的「記錄」工作表。</div>
+          <div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <button onClick="{{ submitToSheet }}" style="{{ submitSheetStyle }}">📤 提交測驗成績</button>
+            <span style="font-size:14px;font-weight:700;{{ submitMsgColor }}">{{ submitMsg }}</span>
+          </div>
+          <div style="font-size:12.5px;opacity:.6;margin-top:12px">目前測驗成績：{{ quizStatusText }}</div>
+        </div>
+
+        <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
+          <button onClick="{{ downloadHistory }}" style="border:none;background:#2563eb;color:#fff;border-radius:14px;padding:13px 20px;font-weight:800;font-size:15px">⬇ 下載學習歷程（.txt）</button>
+          <button onClick="{{ downloadJSON }}" style="border:1px solid #e5ecff;background:#fff;color:#2563eb;border-radius:14px;padding:13px 20px;font-weight:800;font-size:15px">⬇ 下載完整資料（.json）</button>
+          <button onClick="{{ clearHistory }}" style="border:1px solid #fecaca;background:#fff5f5;color:#dc2626;border-radius:14px;padding:13px 20px;font-weight:800;font-size:15px">清除歷程</button>
+        </div>
+
+        <div style="margin-top:22px;background:#fff;border-radius:20px;border:1px solid #eef2f7;padding:8px 4px;box-shadow:0 16px 34px -26px rgba(30,41,59,.5)">
+          <div style="padding:14px 18px;font-weight:900;font-size:16px;border-bottom:1px solid #f1f5f9">🕒 活動紀錄（最新在上）</div>
+          <div style="max-height:420px;overflow-y:auto">
+            <sc-for list="{{ historyView }}" as="h" hint-placeholder-count="4">
+              <div style="display:flex;gap:14px;align-items:flex-start;padding:13px 18px;border-bottom:1px solid #f6f8fb">
+                <div style="{{ h.dotStyle }}">{{ h.icon }}</div>
+                <div style="flex:1">
+                  <div style="font-size:15px;font-weight:700;color:#1e293b">{{ h.title }}</div>
+                  <div style="font-size:13px;color:#94a3b8;margin-top:2px">{{ h.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ historyEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:34px;text-align:center;color:#94a3b8;font-size:15px">還沒有紀錄，快去閱讀教材或玩遊戲吧！</div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    view: 'login', loggedIn: false,
+    form: { klass: '', seat: '', name: '' },
+    unitsRead: {}, curUnit: 0,
+    gameScores: {}, curGame: null, game: {},
+    quizAnswers: {}, quizDone: false, quizCorrect: 0,
+    chat: [], chatInput: '', chatLoading: false,
+    history: [], muted: false,
+    submitMsg: '', submitBusy: false, submitted: false,
+  };
+
+  GAS_URL = 'https://script.google.com/macros/s/AKfycbysMqn73QJdBxuL4rUi8nYBJv13TaYxBJofF9D-U8vKsv_tg0x-xV6UN8ln4MdGA3ksXA/exec';
+  KEY = 'ymhs_traffic_v1';
+
+  UNITS = [
+    { icon:'🚶', color:'#2563eb', title:'行人安全與行人路權', sub:'走路也要懂規則',
+      intro:'行人是道路上最脆弱的用路人。台灣近年推動「行人優先」政策，但行人自己也要遵守號誌、走對地方，才能真正保護自己。',
+      points:[
+        {title:'走行人穿越道與號誌', body:'過馬路一定要走斑馬線或行人穿越道，並依行人號誌（小綠人）通行；行人號誌閃爍時不要搶快進入路口。'},
+        {title:'行人路權與停讓', body:'車輛行經行人穿越道，遇有行人穿越時應暫停禮讓。但行人也不能突然衝出，要確認車輛已停妥再通行。'},
+        {title:'不當低頭族', body:'邊走邊看手機會大幅降低對周遭的警覺。過馬路請收起手機、拿下耳機，用眼睛和耳朵確認安全。'},
+        {title:'夜間與雨天', body:'穿著亮色或反光衣物、走有照明的路段，讓駕駛能及早看見你。'},
+      ],
+      key:'走斑馬線、看號誌、不低頭、與車輛互相禮讓，是行人保命的四個關鍵。' },
+    { icon:'🚲', color:'#0891b2', title:'自行車安全', sub:'單車通勤族必看',
+      intro:'自行車是很多同學上下學的交通工具。它屬於「慢車」，行駛時有專屬規則，騎錯地方或搶快都很危險。',
+      points:[
+        {title:'靠右行駛、勿騎人行道', body:'自行車應在慢車道或標線內靠右行駛，不可任意騎上人行道（除非有標誌允許），也不可逆向。'},
+        {title:'兩段式左轉', body:'路口左轉時，先直行到對向路口再轉，切勿像汽機車一樣直接切到內側車道左轉。'},
+        {title:'燈光與煞車', body:'夜間騎乘要開前後燈與反光標識，並定期檢查煞車。轉彎前用手勢示意方向。'},
+        {title:'戴安全帽', body:'雖然一般自行車未強制，但配戴安全帽能大幅降低頭部受傷風險，強烈建議配戴。'},
+      ],
+      key:'靠右、不逆向、不騎人行道、路口兩段式左轉，並注意燈光與煞車。' },
+    { icon:'🏍️', color:'#e11d48', title:'機車安全與考照觀念', sub:'滿18歲前先建立觀念',
+      intro:'台灣機車密度極高，高一同學雖多半還沒考照，但先建立正確觀念，將來考照與騎乘都更安全。',
+      points:[
+        {title:'考照年齡與規定', body:'普通輕型／普通重型機車須年滿18歲才能報考駕照，無照駕駛會被重罰，且保險理賠受影響。'},
+        {title:'安全帽要扣好', body:'安全帽務必扣緊扣環，且選用合格（有CNS標章）的帽款。沒扣好等於沒戴。'},
+        {title:'待轉與兩段式左轉', body:'看到「機車兩段式左轉」標誌，須在待轉區完成左轉，不可直接切入內側車道。'},
+        {title:'不鑽車縫、不飆速', body:'鑽車縫、蛇行、超速是機車事故主因。保持在車道中央、維持安全距離最安全。'},
+      ],
+      key:'滿18歲才考照、安全帽扣好、依規定待轉、不鑽車縫不飆速。' },
+    { icon:'🚚', color:'#d97706', title:'路口安全：內輪差與視野死角', sub:'大車旁最危險',
+      intro:'大型車輛轉彎時，後輪的行進軌跡會比前輪更靠內側，形成「內輪差」；車身周圍也有駕駛看不到的「視野死角」。這是最容易致命的情境之一。',
+      points:[
+        {title:'什麼是內輪差', body:'車輛轉彎時前後輪路徑不同，後輪會往內切。站或騎在大車轉彎的內側，很可能被捲入。'},
+        {title:'遠離大車', body:'不要緊貼大型車輛（尤其在其右側與後方），等紅燈時停在大車後方安全距離，不要停在車頭旁。'},
+        {title:'視野死角', body:'大車的車頭正前方、兩側與正後方都是死角。你看得到車，不代表駕駛看得到你。'},
+        {title:'路口停等勿越線', body:'停紅燈時停在停止線後方，保留給大車轉彎的空間，也讓自己遠離內輪差範圍。'},
+      ],
+      key:'大車轉彎有內輪差，遠離其右側與死角，停等時退到停止線後方。' },
+    { icon:'🚦', color:'#7c3aed', title:'交通號誌與標誌', sub:'看懂路上的語言',
+      intro:'號誌與標誌是道路的共同語言。看懂它們，就能預判該停、該讓、還是可以通行。',
+      points:[
+        {title:'三色號誌', body:'紅燈停、綠燈行、黃燈是警示準備停車，不是「趕快通過」。'},
+        {title:'警告標誌（黃底三角）', body:'提醒前方有危險或狀況，例如當心行人、注意彎路、當心兒童。'},
+        {title:'禁制標誌（紅圈）', body:'表示禁止或限制，例如禁止進入、禁止臨時停車、速限。'},
+        {title:'指示標誌與標線', body:'藍底為指示（如行人穿越道、單行道）；地面標線如雙黃線不可跨越、網狀線不可停等。'},
+      ],
+      key:'黃燈準備停、紅圈是禁止、黃三角是警告、藍底是指示。' },
+    { icon:'🍺', color:'#dc2626', title:'酒駕與危險駕駛', sub:'一次都不能有',
+      intro:'酒駕、超速與分心駕駛是重大事故的元凶。即使你還不能開車，也要懂得拒絕搭乘酒駕者的車。',
+      points:[
+        {title:'酒駕零容忍', body:'酒精會延遲反應、影響判斷。台灣對酒駕採重罰並可能觸犯公共危險罪，累犯更重。'},
+        {title:'拒絕搭乘', body:'看到親友喝酒後想開車，勇敢阻止並協助叫代駕或計程車。你的一句話可能救人一命。'},
+        {title:'不超速', body:'速度越快，煞停距離越長、撞擊力越大。遵守速限是給自己反應的時間。'},
+        {title:'不分心', body:'開車、騎車時使用手機等同閉眼行駛數十公尺，務必先停車再處理。'},
+      ],
+      key:'酒駕零容忍、勇於拒絕搭乘酒駕車、不超速、不分心。' },
+    { icon:'🛡️', color:'#0d9488', title:'防禦駕駛觀念', sub:'預判危險、保護自己',
+      intro:'防禦駕駛是「假設別人可能會犯錯」，提早預留反應空間。這觀念不只用在開車，走路、騎車都適用。',
+      points:[
+        {title:'保持安全距離', body:'與前車保持「兩秒法則」的距離：前車經過某定點後，你數兩秒才到達。雨天要拉更長。'},
+        {title:'預判與掃描', body:'隨時觀察前方、兩側與後方狀況，預想「如果那台車突然轉彎怎麼辦」。'},
+        {title:'增加能見度', body:'穿亮色衣物、開車燈、避免待在他人死角，讓別人看得到你。'},
+        {title:'不搶不逼', body:'不搶黃燈、不逼車、不做讓別人措手不及的動作，給彼此反應時間。'},
+      ],
+      key:'假設他人會犯錯、保持安全距離、預判危險、讓自己被看見。' },
+    { icon:'🚑', color:'#be123c', title:'事故後處理與急救', sub:'冷靜正確地反應',
+      intro:'萬一遇到交通事故，正確的處理能保護傷者、保全證據、避免二次事故。',
+      points:[
+        {title:'保護現場、防二次事故', body:'開啟警示燈、擺放警告標誌，把自己移到安全處，避免又被後方來車撞上。'},
+        {title:'報案與求救', body:'撥打110（警察）與119（救護車）。清楚說明地點、人數、傷勢。'},
+        {title:'不隨意移動重傷者', body:'除非有立即危險（如起火），否則不要任意搬動疑似脊椎受傷者，等待專業救護。'},
+        {title:'基本急救概念', body:'學會確認意識與呼吸、施行CPR與止血的基本概念，關鍵時刻能救命。'},
+      ],
+      key:'先保護現場防二次事故，撥110／119，不亂搬重傷者，具備基本急救概念。' },
+    { icon:'🏫', color:'#2563eb', title:'通學安全（校園周邊）', sub:'上下學尖峰最要小心',
+      intro:'上下學時間校園周邊人車最多，也最容易發生事故。養成好習慣，平安到校、平安回家。',
+      points:[
+        {title:'尖峰時段放慢', body:'上下學人潮車潮多，過馬路即使綠燈也要左右確認，不要邊走邊追公車。'},
+        {title:'下車注意開門', body:'搭車或家長接送下車時，先看後方有無來車與單車，再開門下車（荷蘭式開門法）。'},
+        {title:'不在車陣中穿越', body:'不要從停等車輛間隙穿越馬路，駕駛看不到你，非常危險。'},
+        {title:'共乘與排隊', body:'等公車、上下車要排隊，不推擠、不站在車道上。'},
+      ],
+      key:'尖峰放慢、綠燈也要看、下車小心開門、不在車陣中穿越。' },
+    { icon:'🛴', color:'#9333ea', title:'新興載具安全', sub:'電動滑板車、微型電動二輪',
+      intro:'電動滑板車、電動自行車等新興載具越來越普及，但它們也有專屬法規與風險，不能隨便上路。',
+      points:[
+        {title:'認識法規分類', body:'微型電動二輪車須掛牌、投保並戴安全帽；電動滑板車在台灣多數道路目前不得行駛，使用前務必確認當地規定。'},
+        {title:'戴安全帽、勿載人', body:'這類載具重心高、速度快，務必戴安全帽，且多為單人設計，不可載人。'},
+        {title:'行駛區域', body:'不可在人行道高速行駛，避開行人；夜間要有燈光與反光。'},
+        {title:'定期檢查', body:'檢查煞車、輪胎與電池狀況，避免行駛中故障。'},
+      ],
+      key:'先確認法規、掛牌投保戴帽、不載人、選對行駛區域、定期檢查。' },
+  ];
+
+  QUIZ = [
+    { text:'行人號誌的小綠人開始閃爍時，你應該？', options:['加速衝過去','不要再進入路口，等下一次綠燈','停在馬路中央等','無所謂'], ans:1, exp:'號誌閃爍表示即將轉換，尚未進入路口者應停止，不要搶快。' },
+    { text:'關於大型車輛的「內輪差」，下列何者正確？', options:['轉彎時後輪比前輪更靠外側','站在大車轉彎內側很安全','轉彎時後輪會往內切，內側很危險','只有卡車有內輪差'], ans:2, exp:'轉彎時後輪路徑比前輪更靠內，內側易被捲入，務必遠離。' },
+    { text:'自行車在一般路口要左轉時，正確做法是？', options:['直接切到內側車道左轉','兩段式左轉','逆向過去比較快','在斑馬線上騎過去'], ans:1, exp:'自行車屬慢車，路口左轉應採兩段式左轉。' },
+    { text:'機車駕照最低報考年齡是？', options:['16歲','18歲','15歲','20歲'], ans:1, exp:'普通輕型／重型機車須年滿18歲才能報考。' },
+    { text:'黃燈亮起時的正確觀念是？', options:['趕快加速通過','準備停車','一定要停到動不了','當作綠燈'], ans:1, exp:'黃燈是警示，應減速準備停車，而非搶快通過。' },
+    { text:'看到紅色圓形的標誌，通常代表？', options:['指示方向','禁止或限制','前方有危險提醒','可以通行'], ans:1, exp:'紅圈為禁制標誌，表示禁止或限制。' },
+    { text:'關於酒駕，下列敘述何者正確？', options:['喝一點點沒關係','酒駕會延遲反應且可能觸法，應零容忍','只要車速慢就安全','搭酒駕者的車沒問題'], ans:1, exp:'酒精影響判斷與反應，酒駕零容忍，也應拒絕搭乘。' },
+    { text:'「兩秒法則」是指？', options:['兩秒內要換車道','與前車保持約兩秒的行車距離','紅燈只等兩秒','兩秒內要按喇叭'], ans:1, exp:'保持約兩秒的跟車距離，預留反應與煞停空間。' },
+    { text:'發生車禍後，第一步應該優先做什麼？', options:['先跟對方吵架','立刻搬動所有傷者','開警示燈、設警告標誌並移到安全處，防二次事故','拍照上傳社群'], ans:2, exp:'先確保安全、避免二次事故，再報案求救。' },
+    { text:'下車開門時採「荷蘭式開門法」的用意是？', options:['開門比較快','用離門較遠的手開門，身體自然轉向後方觀察來車','讓門開得比較大','避免弄髒手'], ans:1, exp:'用遠側手開門會帶動身體轉向，順勢查看後方單車與來車。' },
+  ];
+
+  SIGNS = [
+    { key:'no-entry', name:'禁止進入', ans:'禁止車輛進入', wrong:['可以進入','僅限機車','單行道'] },
+    { key:'stop', name:'停車再開', ans:'停車再開，確認安全後通行', wrong:['禁止停車','速限標誌','可直接通過'] },
+    { key:'yield', name:'讓', ans:'讓幹道車先行', wrong:['優先通行','禁止左轉','停車格'] },
+    { key:'ped', name:'當心行人', ans:'注意前方有行人', wrong:['禁行人','人行道','行人穿越道'] },
+    { key:'speed', name:'速限50', ans:'最高速限每小時50公里', wrong:['最低速限50','距離50公尺','限重50噸'] },
+    { key:'children', name:'當心兒童', ans:'注意前方學童出沒', wrong:['禁止兒童','兒童遊戲區','校車站'] },
+  ];
+
+  MATCH = [
+    { s:'紅色圓形＋白色橫槓', m:'禁止進入' },
+    { s:'倒三角形「讓」', m:'讓幹道車先行' },
+    { s:'黃色三角形＋行人圖案', m:'當心行人' },
+    { s:'紅色八角形 STOP', m:'停車再開' },
+    { s:'藍底＋斑馬線圖案', m:'行人穿越道' },
+    { s:'紅圈內數字 50', m:'速限每小時50公里' },
+  ];
+
+  TF = [
+    { q:'綠燈亮起就可以完全不看左右直接通過路口。', a:false, exp:'綠燈也要確認左右來車，尤其防範闖紅燈或轉彎車。' },
+    { q:'騎自行車可以任意騎上人行道快速通行。', a:false, exp:'除非有標誌允許，自行車不可騎人行道。' },
+    { q:'安全帽只要戴在頭上、不扣扣環也有保護效果。', a:false, exp:'沒扣好在碰撞時會脫落，等於沒戴。' },
+    { q:'大型車輛轉彎時，站在其內側非常危險。', a:true, exp:'內輪差會把內側的人車捲入，務必遠離。' },
+    { q:'黃燈的意思是要加速趕快通過。', a:false, exp:'黃燈是警示，應減速準備停車。' },
+    { q:'喝了酒但覺得清醒，還是不可以開車或騎車。', a:true, exp:'酒精會延遲反應，酒駕零容忍。' },
+    { q:'過馬路時可以邊走邊滑手機沒關係。', a:false, exp:'低頭會降低警覺，過馬路請收起手機。' },
+    { q:'發生車禍後應先開警示燈並移到安全處。', a:true, exp:'先防二次事故，再報案求救。' },
+  ];
+
+  HAZARDS = [
+    { id:'phone', x:12, y:58, r:11, label:'低頭滑手機過馬路的行人' },
+    { id:'truck', x:70, y:46, r:13, label:'右轉的大貨車（內輪差危險）' },
+    { id:'door', x:40, y:64, r:10, label:'突然打開的車門' },
+    { id:'run', x:26, y:44, r:9, label:'從車陣間衝出的小孩' },
+  ];
+
+  DEADANGLE = [
+    { q:'大貨車正要右轉，騎士停在下列哪個位置最安全？', zones:[
+        { x:64, y:30, label:'車頭右前方', safe:false, why:'正好在內輪差與死角範圍，最危險！' },
+        { x:34, y:66, label:'車尾後方安全距離', safe:true, why:'遠離內輪差與死角，安全。' },
+        { x:70, y:60, label:'車身右側緊貼', safe:false, why:'右側是死角，轉彎時會被捲入。' },
+      ] },
+    { q:'等紅燈時，你騎機車應該停在大車的？', zones:[
+        { x:50, y:24, label:'車頭正前方', safe:false, why:'駕駛從駕駛座看不到你，非常危險。' },
+        { x:50, y:70, label:'車後方停止線後', safe:true, why:'保持距離、避開死角，最安全。' },
+        { x:72, y:48, label:'車身右側', safe:false, why:'右側是視野死角。' },
+      ] },
+  ];
+
+  ADVENTURE = {
+    start: { text:'放學了，你要騎自行車回家。天色漸暗，前方路口是你要左轉的地方。你會？', choices:[
+        { label:'打開自行車燈光，減速接近路口', next:'n1' },
+        { label:'趕時間，摸黑加速衝過去', next:'bad1' } ] },
+    n1: { text:'很好，燈光讓你被看見。到了路口要左轉，你應該？', choices:[
+        { label:'採兩段式左轉，先直行到對面再轉', next:'n2' },
+        { label:'直接切到內側車道像汽車一樣左轉', next:'bad2' } ] },
+    n2: { text:'安全！左轉後，前方有一台大貨車正要右轉。你會？', choices:[
+        { label:'保持距離停在它後方，等它轉完', next:'good' },
+        { label:'從它右側車縫超過去', next:'bad3' } ] },
+    good: { end:true, ok:true, text:'🎉 太棒了！你全程做出安全的選擇：開燈、兩段式左轉、遠離大車內輪差。你安全到家了！' },
+    bad1: { end:true, ok:false, text:'⚠️ 摸黑不開燈，駕駛很難看見你，非常危險。記得：夜間騎乘一定要開燈、減速。' },
+    bad2: { end:true, ok:false, text:'⚠️ 自行車直接切內側左轉很危險，容易與直行車碰撞。正確做法是兩段式左轉。' },
+    bad3: { end:true, ok:false, text:'⚠️ 從大車右側超車正好進入內輪差與死角，極可能被捲入。務必遠離大車右側。' },
+  };
+
+  GAMES = [
+    { id:'sign', icon:'⚡', title:'號誌快問快答', desc:'限時30秒，看標誌選出正確意義，答越多分越高！', color:'#f59e0b' },
+    { id:'match', icon:'🃏', title:'標誌配對', desc:'把標誌和它的意義配成一對，越少次數越厲害。', color:'#8b5cf6' },
+    { id:'tf', icon:'⬅️', title:'是非快速反應', desc:'看敘述判斷對或錯，訓練你的安全直覺。', color:'#06b6d4' },
+    { id:'hazard', icon:'🔍', title:'找出危險', desc:'在街景中點出所有潛在危險，考驗觀察力。', color:'#ef4444' },
+    { id:'deadangle', icon:'🚚', title:'內輪差與死角', desc:'判斷在大車旁哪裡才安全，避開致命死角。', color:'#d97706' },
+    { id:'adventure', icon:'🗺️', title:'情境冒險', desc:'做出一連串選擇，看看你能不能安全騎車回家。', color:'#10b981' },
+  ];
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      if (raw) {
+        const d = JSON.parse(raw);
+        this.setState({
+          form: d.form || this.state.form,
+          loggedIn: !!d.loggedIn,
+          view: d.loggedIn ? 'home' : 'login',
+          unitsRead: d.unitsRead || {},
+          gameScores: d.gameScores || {},
+          quizAnswers: d.quizAnswers || {},
+          quizDone: !!d.quizDone, quizCorrect: d.quizCorrect || 0,
+          chat: d.chat || [], history: d.history || [],
+          muted: !!d.muted, submitted: !!d.submitted,
+        });
+      }
+    } catch(e) {}
+  }
+
+  persist(extra) {
+    const s = { ...this.state, ...(extra||{}) };
+    try {
+      localStorage.setItem(this.KEY, JSON.stringify({
+        form: s.form, loggedIn: s.loggedIn, unitsRead: s.unitsRead,
+        gameScores: s.gameScores, quizAnswers: s.quizAnswers,
+        quizDone: s.quizDone, quizCorrect: s.quizCorrect,
+        chat: s.chat, history: s.history, muted: s.muted, submitted: s.submitted,
+      }));
+    } catch(e) {}
+  }
+
+  now() {
+    const d = new Date();
+    const p = n => String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
+
+  log(icon, title) {
+    const h = [{ icon, title, time: this.now(), ts: Date.now() }, ...this.state.history].slice(0, 200);
+    this.setState({ history: h }, () => this.persist());
+  }
+
+  sound(kind) {
+    if (this.state.muted) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      this._ac = this._ac || new AC();
+      const ac = this._ac;
+      if (ac.state === 'suspended') ac.resume();
+      const seq = ({ correct:[[660,0],[880,.09]], wrong:[[200,0],[150,.12]], click:[[520,0]], win:[[523,0],[659,.1],[784,.2],[1046,.32]], start:[[392,0],[523,.1]] })[kind] || [[440,0]];
+      seq.forEach(([f,t]) => {
+        const o = ac.createOscillator(), g = ac.createGain();
+        o.type = kind==='wrong' ? 'sawtooth' : 'sine';
+        o.frequency.value = f; o.connect(g); g.connect(ac.destination);
+        const s = ac.currentTime + t;
+        g.gain.setValueAtTime(0.0001, s);
+        g.gain.exponentialRampToValueAtTime(0.18, s + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, s + 0.18);
+        o.start(s); o.stop(s + 0.2);
+      });
+    } catch(e) {}
+  }
+
+  go(view) { this.sound('click'); this.setState({ view }); }
+
+  renderVals() {
+    const st = this.state;
+    const h = React.createElement;
+    const filled = st.form.klass.trim() && st.form.seat.trim() && st.form.name.trim();
+
+    // nav
+    const navDefs = [
+      { id:'home', label:'首頁', icon:'🏠', c:'#2563eb' },
+      { id:'learn', label:'教材', icon:'📚', c:'#2563eb' },
+      { id:'games', label:'遊戲', icon:'🎮', c:'#8b5cf6' },
+      { id:'quiz', label:'測驗', icon:'📝', c:'#059669' },
+      { id:'assistant', label:'AI助手', icon:'🤖', c:'#f59e0b' },
+      { id:'history', label:'歷程', icon:'📈', c:'#0d9488' },
+    ];
+    const activeView = (st.view==='learnDetail'?'learn':(st.view==='game'?'games':st.view));
+    const navItems = navDefs.map(n => {
+      const on = activeView === n.id;
+      return { icon:n.icon, label:n.label, onClick:()=>this.go(n.id),
+        style:`display:flex;align-items:center;gap:7px;white-space:nowrap;border:none;border-radius:12px;padding:9px 15px;font-weight:800;font-size:14.5px;transition:.15s;${on?`background:${n.c};color:#fff;box-shadow:0 8px 18px -8px ${n.c}`:'background:#fff;color:#475569;border:1px solid #e5ecff'}` };
+    });
+
+    // progress
+    const readCount = Object.keys(st.unitsRead).filter(k=>st.unitsRead[k]).length;
+    const learnPct = Math.round(readCount/this.UNITS.length*100);
+    const gamesPlayed = Object.keys(st.gameScores).length;
+    const quizBest = st.quizDone ? `${st.quizCorrect}/10` : '—';
+
+    // home cards
+    const cardBase = 'background:#fff;border-radius:22px;padding:22px;cursor:pointer;transition:.2s;border:1px solid #eef2f7;box-shadow:0 16px 34px -26px rgba(30,41,59,.5)';
+    const homeCards = [
+      { key:'learn', icon:'📚', title:'交通安全教材', desc:'十個單元，行人、單車、機車、路口安全一次學會。', tag:`已讀 ${readCount}/10 單元`, c:'#2563eb', view:'learn' },
+      { key:'games', icon:'🎮', title:'遊戲練習場', desc:'六款互動小遊戲，反覆練習加深記憶。', tag:`挑戰過 ${gamesPlayed} 款`, c:'#8b5cf6', view:'games' },
+      { key:'quiz', icon:'📝', title:'交通安全測驗', desc:'10 題檢測你的學習成果，附完整詳解。', tag: st.quizDone?`最佳 ${st.quizCorrect}/10`:'尚未作答', c:'#059669', view:'quiz' },
+      { key:'assistant', icon:'🤖', title:'AI 學習小助手', desc:'有問題隨時問，用你聽得懂的方式解答。', tag:'免登入直接用', c:'#f59e0b', view:'assistant' },
+      { key:'history', icon:'📈', title:'我的學習歷程', desc:'記錄學習與遊戲成果，可下載、可上傳成績。', tag:`${st.history.length} 筆紀錄`, c:'#0d9488', view:'history' },
+    ].map(c => ({ icon:c.icon, title:c.title, desc:c.desc, tag:c.tag, onClick:()=>this.go(c.view),
+      style:cardBase,
+      iconWrap:`width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px;background:${c.c}1a`,
+      tagStyle:`display:inline-block;margin-top:14px;font-size:12.5px;font-weight:800;color:${c.c};background:${c.c}14;padding:6px 12px;border-radius:999px` }));
+
+    const dailyTips = [
+      '過馬路前，先「停、看、聽」——停下腳步，左右查看，收起耳機聽清楚周遭。',
+      '等紅燈時，退到停止線後方，遠離大車的內輪差與死角。',
+      '夜間騎車一定要開燈、穿亮色衣物，讓駕駛提早看見你。',
+      '搭車下車前，用離門較遠的手開門，順勢回頭看後方有沒有來車或單車。',
+    ];
+    const dailyTip = dailyTips[new Date().getDate() % dailyTips.length];
+
+    // learn cards
+    const unitCards = this.UNITS.map((u,i) => {
+      const read = !!st.unitsRead[i];
+      return { no:i+1, title:u.title, sub:u.sub, icon:u.icon, onClick:()=>{ this.sound('click'); this.setState({ curUnit:i, view:'learnDetail' }); this.log('📖', `閱讀單元：${u.title}`); },
+        style:`background:#fff;border-radius:20px;padding:20px;cursor:pointer;transition:.2s;border:2px solid ${read?'#bbf7d0':'#eef2f7'};box-shadow:0 16px 30px -26px rgba(30,41,59,.5)`,
+        iconWrap:`width:52px;height:52px;border-radius:14px;font-size:28px;display:flex;align-items:center;justify-content:center;background:${u.color}18`,
+        badge: read?'✓ 已讀':'未讀', badgeStyle:`font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;${read?'background:#dcfce7;color:#16a34a':'background:#f1f5f9;color:#94a3b8'}` };
+    });
+    const learnBarStyle = `height:100%;width:${learnPct}%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:999px;transition:width .5s`;
+
+    // learn detail
+    const cu = this.UNITS[st.curUnit] || this.UNITS[0];
+    const curUnit = { no:st.curUnit+1, title:cu.title, sub:cu.sub, icon:cu.icon, intro:cu.intro, key:cu.key };
+    const unitHeaderStyle = `background:linear-gradient(120deg,${cu.color},${cu.color}cc);padding:28px 26px;color:#fff;display:flex;gap:20px;align-items:center`;
+    const curUnitPoints = cu.points.map((p,i)=>({ n:i+1, title:p.title, body:p.body,
+      numStyle:`width:30px;height:30px;flex:none;border-radius:10px;background:${cu.color};color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:Fredoka` }));
+    const isRead = !!st.unitsRead[st.curUnit];
+    const markReadLabel = isRead ? '✓ 已完成本單元' : '標記為已讀';
+    const markReadStyle = `border:none;border-radius:14px;padding:13px 24px;font-weight:800;font-size:15px;color:#fff;background:${isRead?'#16a34a':'linear-gradient(135deg,#22c55e,#16a34a)'}`;
+
+    // games hub
+    const gameCards = this.GAMES.map(g => {
+      const sc = st.gameScores[g.id];
+      return { icon:g.icon, title:g.title, desc:g.desc, onClick:()=>this.startGame(g.id),
+        style:`background:#fff;border-radius:22px;padding:22px;cursor:pointer;transition:.2s;border-top:5px solid ${g.color};box-shadow:0 16px 34px -26px rgba(30,41,59,.5)`,
+        best: sc ? `最佳：${sc.label}` : '尚未挑戰',
+        bestStyle:`display:inline-block;margin-top:12px;font-size:12.5px;font-weight:800;padding:5px 11px;border-radius:999px;${sc?`color:${g.color};background:${g.color}14`:'color:#94a3b8;background:#f1f5f9'}` };
+    });
+
+    // quiz
+    const quizView = this.QUIZ.map((q,qi) => {
+      const picked = st.quizAnswers[qi];
+      return { no:qi+1, text:q.text, showExp: st.quizDone, exp:q.exp,
+        options: q.options.map((opt,oi) => {
+          const sel = picked === oi;
+          let bg='#f8fafc', bd='#e2e8f0', color='#334155', mark='', markBg='#fff', markColor='#94a3b8', markBd='#cbd5e1';
+          if (!st.quizDone) {
+            if (sel) { bg='#eff6ff'; bd='#2563eb'; markBg='#2563eb'; markColor='#fff'; markBd='#2563eb'; mark='✓'; }
+          } else {
+            if (oi === q.ans) { bg='#ecfdf5'; bd='#10b981'; color='#065f46'; markBg='#10b981'; markColor='#fff'; markBd='#10b981'; mark='✓'; }
+            else if (sel) { bg='#fef2f2'; bd='#ef4444'; color='#7f1d1d'; markBg='#ef4444'; markColor='#fff'; markBd='#ef4444'; mark='✕'; }
+          }
+          return { text:opt, mark, onClick: st.quizDone ? (()=>{}) : (()=>this.pickQuiz(qi,oi)),
+            style:`display:flex;align-items:center;gap:11px;border:2px solid ${bd};background:${bg};color:${color};border-radius:13px;padding:12px 14px;font-size:15.5px;font-weight:600;cursor:${st.quizDone?'default':'pointer'};transition:.12s`,
+            markStyle:`width:24px;height:24px;flex:none;border-radius:7px;border:2px solid ${markBd};background:${markBg};color:${markColor};font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center` };
+        }) };
+    });
+    const quizAnswered = Object.keys(st.quizAnswers).length;
+    const allAnswered = quizAnswered === this.QUIZ.length;
+    const submitQuizStyle = `margin-top:20px;width:100%;border:none;border-radius:16px;padding:16px;font-weight:900;font-size:17px;color:#fff;transition:.2s;background:${allAnswered?'linear-gradient(135deg,#059669,#10b981)':'#cbd5e1'};cursor:${allAnswered?'pointer':'not-allowed'}`;
+    const quizEmoji = st.quizCorrect>=9?'🏆':st.quizCorrect>=7?'😃':st.quizCorrect>=5?'🙂':'💪';
+    const quizResultTitle = st.quizCorrect>=9?'太厲害了，交通安全達人！':st.quizCorrect>=7?'很不錯，觀念很扎實！':st.quizCorrect>=5?'及格囉，再加把勁！':'多複習教材，你會更棒！';
+    const wrongList = st.quizDone ? this.QUIZ.map((q,qi)=>({q,qi})).filter(o=>st.quizAnswers[o.qi]!==o.q.ans).map(o=>({ no:o.qi+1, text:o.q.text, ans:o.q.options[o.q.ans] })) : [];
+
+    // chat
+    const chatView = st.chat.map(m => ({ content:m.content,
+      rowStyle:`display:flex;${m.role==='user'?'justify-content:flex-end':'justify-content:flex-start'}`,
+      bubbleStyle:`max-width:82%;padding:13px 16px;border-radius:18px;font-size:15px;line-height:1.7;white-space:pre-wrap;${m.role==='user'?'background:#2563eb;color:#fff;border-bottom-right-radius:5px':'background:#f1f5f9;color:#1e293b;border-bottom-left-radius:5px'}` }));
+    const suggestions = ['什麼是內輪差？','機車幾歲可以考照？','過馬路要注意什麼？'].map(t=>({ text:t, onClick:()=>this.sendChat(t) }));
+    const canSend = st.chatInput.trim() && !st.chatLoading;
+    const sendStyle = `border:none;border-radius:14px;padding:0 20px;font-weight:800;font-size:15px;color:#fff;background:${canSend?'#2563eb':'#cbd5e1'};cursor:${canSend?'pointer':'not-allowed'}`;
+
+    // history
+    const statCards = [
+      { label:'教材閱讀', value:`${readCount}/10`, c:'#2563eb' },
+      { label:'挑戰遊戲', value:gamesPlayed, c:'#8b5cf6' },
+      { label:'測驗成績', value:quizBest, c:'#059669' },
+      { label:'AI 問答', value:st.chat.filter(m=>m.role==='user').length, c:'#f59e0b' },
+    ].map(s=>({ label:s.label, value:s.value, style:`background:linear-gradient(135deg,${s.c},${s.c}cc);color:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 16px 30px -22px ${s.c}` }));
+    const historyView = st.history.map(hh=>({ icon:hh.icon, title:hh.title, time:hh.time,
+      dotStyle:'width:38px;height:38px;flex:none;border-radius:11px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:18px' }));
+    const quizStatusText = st.quizDone ? `${st.quizCorrect}/10 題答對` : '尚未完成測驗（請先到測驗頁作答）';
+    const submitReady = st.quizDone && !st.submitBusy;
+    const submitSheetStyle = `border:none;border-radius:14px;padding:13px 22px;font-weight:800;font-size:15px;color:${submitReady||st.submitBusy?'#1e293b':'#94a3b8'};background:${submitReady?'#fbbf24':(st.submitBusy?'#fde68a':'#475569')};cursor:${submitReady?'pointer':'not-allowed'}`;
+    const submitMsgColor = st.submitMsg.indexOf('成功')>=0?'color:#4ade80':(st.submitMsg.indexOf('失敗')>=0||st.submitMsg.indexOf('未設定')>=0?'color:#fca5a5':'color:#cbd5e1');
+
+    return {
+      loggedIn: st.loggedIn, muted: st.muted, muteIcon: st.muted?'🔇':'🔊',
+      studentLabel: `${st.form.klass} ${st.form.seat}號 ${st.form.name}`,
+      goHome: ()=>this.go('home'), toggleMute: ()=>{ this.setState({muted:!st.muted}, ()=>this.persist()); }, logout: ()=>this.logout(),
+      navItems,
+      showLogin: !st.loggedIn,
+      formKlass: st.form.klass, formSeat: st.form.seat, formName: st.form.name,
+      onKlass: e=>this.setForm('klass', e.target.value),
+      onSeat: e=>this.setForm('seat', e.target.value),
+      onName: e=>this.setForm('name', e.target.value),
+      doLogin: ()=>this.doLogin(),
+      loginBtnStyle: `width:100%;margin-top:26px;border:none;border-radius:16px;padding:16px;font-size:17px;font-weight:900;color:#fff;transition:.2s;background:${filled?'linear-gradient(135deg,#2563eb,#4f46e5)':'#cbd5e1'};cursor:${filled?'pointer':'not-allowed'};box-shadow:${filled?'0 14px 26px -12px #2563ebaa':'none'}`,
+      isHome: st.loggedIn && st.view==='home', learnPct, gamesPlayed, quizBest, homeCards, dailyTip,
+      isLearn: st.view==='learn', unitCards, learnBarStyle,
+      isLearnDetail: st.view==='learnDetail', curUnit, unitHeaderStyle, curUnitPoints,
+      backToLearn: ()=>this.go('learn'), markRead: ()=>this.markRead(), markReadLabel, markReadStyle, nextUnit: ()=>this.nextUnit(),
+      isGames: st.view==='games', gameCards,
+      isGamePlay: st.view==='game', backToGames: ()=>{ this.stopTimer(); this.go('games'); }, gameBoard: this.renderGameBoard(),
+      isQuiz: st.view==='quiz', quizView, quizNotDone: !st.quizDone, quizDone: st.quizDone, quizAnswered,
+      submitQuiz: ()=>this.submitQuiz(), submitQuizStyle,
+      quizCorrect: st.quizCorrect, quizEmoji, quizResultTitle,
+      hasWrong: wrongList.length>0, wrongCount: wrongList.length, wrongList,
+      retakeQuiz: ()=>this.retakeQuiz(), goHistory: ()=>this.go('history'),
+      isAssistant: st.view==='assistant', chatView, chatLoading: st.chatLoading,
+      chatInput: st.chatInput, onChatInput: e=>this.setState({chatInput:e.target.value}),
+      onChatKey: e=>{ if(e.key==='Enter'){ this.sendChat(); } }, sendChat: ()=>this.sendChat(), sendStyle,
+      suggestions, downloadChat: ()=>this.downloadChat(),
+      isHistory: st.view==='history', statCards, historyView, historyEmpty: st.history.length===0,
+      downloadHistory: ()=>this.downloadHistory(), downloadJSON: ()=>this.downloadJSON(), clearHistory: ()=>this.clearHistory(),
+      submitToSheet: ()=>this.submitToSheet(), submitSheetStyle, submitMsg: st.submitMsg, submitMsgColor, quizStatusText,
+    };
+  }
+
+  setForm(k, v) { this.setState({ form: { ...this.state.form, [k]: v } }); }
+  doLogin() {
+    const f = this.state.form;
+    if (!(f.klass.trim() && f.seat.trim() && f.name.trim())) return;
+    this.sound('start');
+    this.setState({ loggedIn:true, view:'home' }, ()=>{ this.log('👋', `登入：${f.klass} ${f.seat}號 ${f.name}`); });
+  }
+  logout() {
+    this.sound('click');
+    this.setState({ loggedIn:false, view:'login' }, ()=>this.persist());
+  }
+  markRead() {
+    const i = this.state.curUnit;
+    if (this.state.unitsRead[i]) return;
+    this.sound('correct');
+    const ur = { ...this.state.unitsRead, [i]:true };
+    this.setState({ unitsRead: ur }, ()=>{ this.persist(); this.log('✅', `完成單元：${this.UNITS[i].title}`); });
+  }
+  nextUnit() {
+    const n = (this.state.curUnit + 1) % this.UNITS.length;
+    this.sound('click');
+    this.setState({ curUnit:n });
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  // ---- quiz ----
+  pickQuiz(qi, oi) { this.sound('click'); this.setState({ quizAnswers: { ...this.state.quizAnswers, [qi]:oi } }); }
+  submitQuiz() {
+    if (Object.keys(this.state.quizAnswers).length !== this.QUIZ.length) return;
+    let c = 0; this.QUIZ.forEach((q,i)=>{ if(this.state.quizAnswers[i]===q.ans) c++; });
+    this.sound(c>=7?'win':'correct');
+    this.setState({ quizDone:true, quizCorrect:c, submitted:false, submitMsg:'' }, ()=>{ this.persist(); this.log('📝', `完成測驗：答對 ${c}/10 題`); });
+    window.scrollTo({ top:9999, behavior:'smooth' });
+  }
+  retakeQuiz() { this.sound('click'); this.setState({ quizAnswers:{}, quizDone:false, quizCorrect:0 }, ()=>this.persist()); window.scrollTo({top:0,behavior:'smooth'}); }
+
+  // ---- games ----
+  startGame(id) {
+    this.sound('start');
+    let g = {};
+    if (id==='sign') g = { i:0, score:0, time:30, done:false, order:this.shuffle(this.SIGNS.map((_,x)=>x)), fb:null };
+    if (id==='match') g = { left:this.shuffle(this.MATCH.map((_,x)=>x)), right:this.shuffle(this.MATCH.map((_,x)=>x)), sel:null, matched:{}, tries:0, done:false };
+    if (id==='tf') g = { i:0, score:0, done:false, fb:null, order:this.shuffle(this.TF.map((_,x)=>x)) };
+    if (id==='hazard') g = { found:{}, done:false, miss:0 };
+    if (id==='deadangle') g = { round:0, score:0, done:false, fb:null };
+    if (id==='adventure') g = { node:'start' };
+    this.setState({ curGame:id, view:'game', game:g }, ()=>{ if(id==='sign') this.startTimer(); this.log('🎮', `開始遊戲：${this.gname(id)}`); });
+  }
+  gname(id){ const g=this.GAMES.find(x=>x.id===id); return g?g.title:id; }
+  shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+  startTimer(){ this.stopTimer(); this._timer=setInterval(()=>{ const g=this.state.game; if(!g||g.done){this.stopTimer();return;} const t=g.time-1; if(t<=0){ this.stopTimer(); this.finishGame('sign', g.score, `${g.score} 分`); this.setState({game:{...g,time:0,done:true}}); } else { this.setState({game:{...g,time:t}}); } },1000); }
+  stopTimer(){ if(this._timer){ clearInterval(this._timer); this._timer=null; } }
+  componentWillUnmount(){ this.stopTimer(); }
+  finishGame(id, score, label){
+    const gs = { ...this.state.gameScores };
+    const prev = gs[id];
+    const better = !prev || score > prev.score;
+    if (better) gs[id] = { score, label, time:this.now() };
+    this.sound('win');
+    this.setState({ gameScores: gs }, ()=>{ this.persist(); this.log('🏅', `完成遊戲「${this.gname(id)}」：${label}`); });
+  }
+
+  // sign game
+  signAnswer(optKey){
+    const g=this.state.game; if(g.done) return;
+    const sIdx=g.order[g.i % g.order.length];
+    const s=this.SIGNS[sIdx];
+    const ok = optKey===s.ans;
+    this.sound(ok?'correct':'wrong');
+    const score = g.score + (ok?1:0);
+    const fb = { ok, correct:s.ans };
+    this.setState({ game:{...g, score, fb } });
+    setTimeout(()=>{ const gg=this.state.game; if(gg.done) return; this.setState({ game:{...gg, i:gg.i+1, fb:null } }); }, 650);
+  }
+
+  // tf game
+  tfAnswer(val){
+    const g=this.state.game; if(g.done) return;
+    const idx=g.order[g.i];
+    const item=this.TF[idx];
+    const ok = val===item.a;
+    this.sound(ok?'correct':'wrong');
+    const score=g.score+(ok?1:0);
+    this.setState({ game:{...g, score, fb:{ ok, exp:item.exp } } });
+    setTimeout(()=>{ const gg=this.state.game; const ni=gg.i+1; if(ni>=this.TF.length){ this.setState({game:{...gg,done:true}}); this.finishGame('tf', score, `${score}/${this.TF.length}`); } else { this.setState({ game:{...gg, i:ni, fb:null } }); } }, 900);
+  }
+
+  // match
+  matchClick(side, idx){
+    const g=this.state.game;
+    if(g.matched[idx]!==undefined && side==='l') return;
+    this.sound('click');
+    if(!g.sel){ if(side==='l' && g.matched[idx]===undefined) this.setState({game:{...g, sel:{side,idx}}}); return; }
+    if(g.sel.side===side){ this.setState({game:{...g, sel:{side,idx}}}); return; }
+    // one left one right
+    const li = side==='l'?idx:g.sel.idx;
+    const ri = side==='r'?idx:g.sel.idx;
+    const tries=g.tries+1;
+    if(li===ri){
+      const matched={...g.matched, [li]:true};
+      this.sound('correct');
+      const done=Object.keys(matched).length===this.MATCH.length;
+      this.setState({game:{...g, matched, sel:null, tries, done}});
+      if(done) this.finishGame('match', Math.max(1, this.MATCH.length*2-tries)*10, `${tries} 次配對`);
+    } else {
+      this.sound('wrong');
+      this.setState({game:{...g, sel:null, tries}});
+    }
+  }
+
+  // hazard
+  hazardClick(id){
+    const g=this.state.game;
+    if(g.found[id]) return;
+    this.sound('correct');
+    const found={...g.found, [id]:true};
+    const done=Object.keys(found).length===this.HAZARDS.length;
+    this.setState({game:{...g, found, done}});
+    if(done) this.finishGame('hazard', 100-g.miss*5, `找到全部 ${this.HAZARDS.length} 個`);
+  }
+  hazardMiss(){ const g=this.state.game; if(g.done) return; this.sound('wrong'); this.setState({game:{...g, miss:g.miss+1}}); }
+
+  // deadangle
+  deadAnswer(zone){
+    const g=this.state.game; if(g.fb) return;
+    this.sound(zone.safe?'correct':'wrong');
+    const score=g.score+(zone.safe?1:0);
+    this.setState({game:{...g, fb:{safe:zone.safe, why:zone.why}, score}});
+    setTimeout(()=>{ const gg=this.state.game; const nr=gg.round+1; if(nr>=this.DEADANGLE.length){ this.setState({game:{...gg,done:true}}); this.finishGame('deadangle', score, `${score}/${this.DEADANGLE.length}`); } else { this.setState({game:{...gg, round:nr, fb:null}}); } }, 1400);
+  }
+
+  // adventure
+  advChoose(next){ this.sound('click'); this.setState({game:{node:next}}); const n=this.ADVENTURE[next]; if(n&&n.end){ this.sound(n.ok?'win':'wrong'); this.finishGame('adventure', n.ok?100:40, n.ok?'安全過關':'再挑戰一次'); } }
+  advRestart(){ this.sound('start'); this.setState({game:{node:'start'}}); }
+
+  renderGameBoard(){
+    const h=React.createElement, g=this.state.game, id=this.state.curGame;
+    if(id==='sign') return this.boardSign(h,g);
+    if(id==='match') return this.boardMatch(h,g);
+    if(id==='tf') return this.boardTF(h,g);
+    if(id==='hazard') return this.boardHazard(h,g);
+    if(id==='deadangle') return this.boardDead(h,g);
+    if(id==='adventure') return this.boardAdv(h,g);
+    return null;
+  }
+
+  signSVG(key, size){
+    const h=React.createElement, s=size||120;
+    const svg=(children,vb)=>h('svg',{width:s,height:s,viewBox:vb||'0 0 100 100'},children);
+    if(key==='no-entry') return svg([h('circle',{cx:50,cy:50,r:44,fill:'#e11d48'}),h('rect',{x:26,y:43,width:48,height:14,rx:2,fill:'#fff'})]);
+    if(key==='stop') return svg([h('polygon',{points:'32,8 68,8 92,32 92,68 68,92 32,92 8,68 8,32',fill:'#e11d48'}),h('text',{x:50,y:60,fill:'#fff',fontSize:22,fontWeight:900,textAnchor:'middle',fontFamily:'Fredoka'},'STOP')]);
+    if(key==='yield') return svg([h('polygon',{points:'50,88 6,14 94,14',fill:'#fff',stroke:'#e11d48',strokeWidth:9}),h('text',{x:50,y:48,fill:'#e11d48',fontSize:26,fontWeight:900,textAnchor:'middle'},'讓')]);
+    if(key==='ped') return svg([h('polygon',{points:'50,10 92,86 8,86',fill:'#fbbf24',stroke:'#1f2937',strokeWidth:5}),h('circle',{cx:50,cy:44,r:6,fill:'#1f2937'}),h('rect',{x:46,y:50,width:8,height:20,rx:3,fill:'#1f2937'})]);
+    if(key==='speed') return svg([h('circle',{cx:50,cy:50,r:44,fill:'#fff',stroke:'#e11d48',strokeWidth:9}),h('text',{x:50,y:64,fill:'#1f2937',fontSize:34,fontWeight:900,textAnchor:'middle',fontFamily:'Fredoka'},'50')]);
+    if(key==='children') return svg([h('polygon',{points:'50,10 92,86 8,86',fill:'#fbbf24',stroke:'#1f2937',strokeWidth:5}),h('circle',{cx:42,cy:46,r:5,fill:'#1f2937'}),h('circle',{cx:58,cy:50,r:5,fill:'#1f2937'}),h('rect',{x:38,y:52,width:8,height:16,rx:3,fill:'#1f2937'}),h('rect',{x:54,y:56,width:8,height:14,rx:3,fill:'#1f2937'})]);
+    return null;
+  }
+
+  boardSign(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'26px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    if(g.done){
+      return card([
+        h('div',{style:{fontSize:'54px',textAlign:'center'}},'⚡'),
+        h('div',{style:{textAlign:'center',fontSize:'22px',fontWeight:900,marginTop:'6px'}},'時間到！'),
+        h('div',{style:{textAlign:'center',fontSize:'46px',fontWeight:900,color:'#f59e0b',fontFamily:'Fredoka'}},g.score+' 分'),
+        h('div',{style:{textAlign:'center',color:'#64748b',marginTop:'4px'}},'30 秒內答對 '+g.score+' 題'),
+        h('button',{onClick:()=>this.startGame('sign'),style:{display:'block',margin:'18px auto 0',border:'none',background:'#f59e0b',color:'#fff',borderRadius:'14px',padding:'12px 26px',fontWeight:800,fontSize:'15px',cursor:'pointer'}},'再玩一次'),
+      ]);
+    }
+    const sIdx=g.order[g.i % g.order.length];
+    const s=this.SIGNS[sIdx];
+    const opts=this.shuffleStable([s.ans,...s.wrong], g.i+sIdx);
+    return card([
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}},[
+        h('div',{style:{fontWeight:800,color:'#64748b'}},'第 '+(g.i+1)+' 題'),
+        h('div',{style:{fontWeight:900,fontSize:'20px',color:g.time<=10?'#ef4444':'#f59e0b',fontFamily:'Fredoka'}},'⏱ '+g.time+' 秒'),
+        h('div',{style:{fontWeight:800,color:'#f59e0b'}},'得分 '+g.score),
+      ]),
+      h('div',{style:{display:'flex',justifyContent:'center',padding:'10px'}},this.signSVG(s.key,130)),
+      h('div',{style:{textAlign:'center',fontWeight:800,fontSize:'17px',margin:'8px 0 16px'}},'這個標誌代表什麼？'),
+      h('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px'}},opts.map((o,k)=>{
+        const fb=g.fb; let bg='#f8fafc',bd='#e2e8f0',color='#334155';
+        if(fb){ if(o===fb.correct){bg='#ecfdf5';bd='#10b981';color='#065f46';} else if(!fb.ok&&o!==fb.correct){/*keep*/} }
+        return h('button',{key:k,disabled:!!fb,onClick:()=>this.signAnswer(o),style:{border:'2px solid '+bd,background:bg,color,borderRadius:'13px',padding:'14px 12px',fontSize:'15px',fontWeight:700,cursor:fb?'default':'pointer',minHeight:'54px'}},o);
+      })),
+    ]);
+  }
+  shuffleStable(a,seed){ a=a.slice(); let s=seed*9301+49297; for(let i=a.length-1;i>0;i--){ s=(s*9301+49297)%233280; const j=Math.floor(s/233280*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  boardMatch(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'24px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    if(g.done){
+      return card([
+        h('div',{style:{fontSize:'54px',textAlign:'center'}},'🎉'),
+        h('div',{style:{textAlign:'center',fontSize:'22px',fontWeight:900,marginTop:'6px'}},'全部配對成功！'),
+        h('div',{style:{textAlign:'center',color:'#64748b',marginTop:'4px'}},'總共用了 '+g.tries+' 次配對'),
+        h('button',{onClick:()=>this.startGame('match'),style:{display:'block',margin:'18px auto 0',border:'none',background:'#8b5cf6',color:'#fff',borderRadius:'14px',padding:'12px 26px',fontWeight:800,cursor:'pointer'}},'再玩一次'),
+      ]);
+    }
+    const col=(side,order)=>h('div',{style:{display:'flex',flexDirection:'column',gap:'10px',flex:1}},order.map(idx=>{
+      const m=this.MATCH[idx]; const done=g.matched[idx];
+      const sel=g.sel&&g.sel.side===side&&g.sel.idx===idx;
+      return h('button',{key:idx,disabled:done,onClick:()=>this.matchClick(side,idx),style:{border:'2px solid '+(done?'#a7f3d0':sel?'#8b5cf6':'#e2e8f0'),background:done?'#ecfdf5':sel?'#f5f3ff':'#f8fafc',color:done?'#94a3b8':'#1e293b',borderRadius:'13px',padding:'14px 12px',fontSize:'14.5px',fontWeight:700,cursor:done?'default':'pointer',textAlign:'left',minHeight:'56px',opacity:done?.6:1,textDecoration:done?'line-through':'none'}},side==='l'?m.s:m.m);
+    }));
+    return card([
+      h('div',{style:{textAlign:'center',fontWeight:800,marginBottom:'6px'}},'把左邊的標誌和右邊的意義配成一對'),
+      h('div',{style:{textAlign:'center',color:'#64748b',fontSize:'13.5px',marginBottom:'16px'}},'已配對 '+Object.keys(g.matched).length+'/'+this.MATCH.length+'　嘗試 '+g.tries+' 次'),
+      h('div',{style:{display:'flex',gap:'12px'}},[col('l',g.left),col('r',g.right)]),
+    ]);
+  }
+
+  boardTF(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'26px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    if(g.done){
+      return card([
+        h('div',{style:{fontSize:'54px',textAlign:'center'}},g.score>=this.TF.length*0.7?'😃':'💪'),
+        h('div',{style:{textAlign:'center',fontSize:'22px',fontWeight:900,marginTop:'6px'}},'完成！'),
+        h('div',{style:{textAlign:'center',fontSize:'40px',fontWeight:900,color:'#06b6d4',fontFamily:'Fredoka'}},g.score+'/'+this.TF.length),
+        h('button',{onClick:()=>this.startGame('tf'),style:{display:'block',margin:'18px auto 0',border:'none',background:'#06b6d4',color:'#fff',borderRadius:'14px',padding:'12px 26px',fontWeight:800,cursor:'pointer'}},'再玩一次'),
+      ]);
+    }
+    const item=this.TF[g.order[g.i]];
+    return card([
+      h('div',{style:{display:'flex',justifyContent:'space-between',color:'#64748b',fontWeight:800,marginBottom:'14px'}},[h('span',null,'第 '+(g.i+1)+'/'+this.TF.length),h('span',{style:{color:'#06b6d4'}},'答對 '+g.score)]),
+      h('div',{style:{background:'#f0fdff',border:'1px solid #a5f3fc',borderRadius:'16px',padding:'26px 20px',fontSize:'19px',fontWeight:700,lineHeight:1.6,textAlign:'center',minHeight:'120px',display:'flex',alignItems:'center',justifyContent:'center'}},item.q),
+      g.fb ? h('div',{style:{marginTop:'14px',textAlign:'center'}},[
+        h('div',{style:{fontSize:'20px',fontWeight:900,color:g.fb.ok?'#059669':'#dc2626'}},g.fb.ok?'✓ 答對了！':'✗ 答錯了'),
+        h('div',{style:{color:'#475569',fontSize:'14.5px',marginTop:'6px',lineHeight:1.6}},g.fb.exp),
+      ]) : h('div',{style:{marginTop:'18px',display:'flex',gap:'12px'}},[
+        h('button',{onClick:()=>this.tfAnswer(false),style:{flex:1,border:'none',background:'#fee2e2',color:'#dc2626',borderRadius:'16px',padding:'20px',fontSize:'19px',fontWeight:900,cursor:'pointer'}},'✗ 錯誤'),
+        h('button',{onClick:()=>this.tfAnswer(true),style:{flex:1,border:'none',background:'#dcfce7',color:'#16a34a',borderRadius:'16px',padding:'20px',fontSize:'19px',fontWeight:900,cursor:'pointer'}},'✓ 正確'),
+      ]),
+    ]);
+  }
+
+  boardHazard(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'20px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    const found=Object.keys(g.found).length;
+    const scene=h('svg',{viewBox:'0 0 100 60',onClick:()=>this.hazardMiss(),style:{width:'100%',borderRadius:'16px',display:'block',cursor:'crosshair'}},[
+      h('rect',{x:0,y:0,width:100,height:60,fill:'#bfdbfe'}),
+      h('rect',{x:0,y:36,width:100,height:24,fill:'#94a3b8'}),
+      h('rect',{x:0,y:46,width:100,height:2,fill:'#fde68a',strokeDasharray:'4 3'}),
+      h('rect',{x:0,y:30,width:100,height:6,fill:'#cbd5e1'}),
+      // buildings
+      h('rect',{x:2,y:12,width:16,height:18,fill:'#e2e8f0'}),h('rect',{x:82,y:8,width:16,height:22,fill:'#e2e8f0'}),
+      // truck
+      h('g',null,[h('rect',{x:62,y:30,width:22,height:12,rx:1,fill:'#f59e0b'}),h('rect',{x:78,y:33,width:8,height:9,fill:'#fbbf24'}),h('circle',{cx:66,cy:43,r:2.4,fill:'#1f2937'}),h('circle',{cx:80,cy:43,r:2.4,fill:'#1f2937'})]),
+      // door car
+      h('g',null,[h('rect',{x:34,y:40,width:14,height:7,rx:2,fill:'#3b82f6'}),h('rect',{x:44,y:39,width:6,height:7,fill:'#93c5fd'}),h('circle',{cx:37,cy:47,r:1.8,fill:'#1f2937'}),h('circle',{cx:46,cy:47,r:1.8,fill:'#1f2937'})]),
+      // phone ped
+      h('g',null,[h('circle',{cx:12,cy:50,r:2,fill:'#f472b6'}),h('rect',{x:10.5,y:52,width:3,height:6,rx:1,fill:'#f472b6'})]),
+      // running kid
+      h('g',null,[h('circle',{cx:26,cy:40,r:1.6,fill:'#22c55e'}),h('rect',{x:25,y:41.5,width:2.4,height:5,rx:1,fill:'#22c55e'})]),
+      // hotspots
+      ...this.HAZARDS.map(z=>h('circle',{key:z.id,cx:z.x,cy:z.y,r:z.r/2,fill:g.found[z.id]?'#ef444455':'transparent',stroke:g.found[z.id]?'#ef4444':'transparent',strokeWidth:1,onClick:(e)=>{e.stopPropagation();this.hazardClick(z.id);},style:{cursor:'pointer'}})),
+      ...this.HAZARDS.filter(z=>g.found[z.id]).map(z=>h('text',{key:z.id+'x',x:z.x,y:z.y+1.5,fontSize:5,textAnchor:'middle',fill:'#ef4444',style:{pointerEvents:'none'}},'!')),
+    ]);
+    return card([
+      h('div',{style:{textAlign:'center',fontWeight:800,fontSize:'17px',marginBottom:'4px'}},'🔍 找出畫面中所有的危險'),
+      h('div',{style:{textAlign:'center',color:'#64748b',fontSize:'13.5px',marginBottom:'12px'}},'已找到 '+found+'/'+this.HAZARDS.length+' 個危險　（點擊圖片上你覺得危險的地方）'),
+      scene,
+      g.done ? h('div',{style:{marginTop:'14px',background:'#ecfdf5',border:'1px solid #a7f3d0',borderRadius:'14px',padding:'16px',textAlign:'center'}},[
+        h('div',{style:{fontWeight:900,color:'#059669',fontSize:'18px'}},'🎉 全部找到了！'),
+        h('div',{style:{color:'#065f46',fontSize:'14px',marginTop:'8px',textAlign:'left',lineHeight:1.7}},this.HAZARDS.map(z=>h('div',{key:z.id},'• '+z.label))),
+        h('button',{onClick:()=>this.startGame('hazard'),style:{marginTop:'12px',border:'none',background:'#ef4444',color:'#fff',borderRadius:'14px',padding:'11px 24px',fontWeight:800,cursor:'pointer'}},'再玩一次'),
+      ]) : h('div',{style:{marginTop:'12px',display:'flex',flexWrap:'wrap',gap:'8px'}},this.HAZARDS.map(z=>h('div',{key:z.id,style:{fontSize:'13px',fontWeight:700,padding:'6px 12px',borderRadius:'999px',background:g.found[z.id]?'#fee2e2':'#f1f5f9',color:g.found[z.id]?'#dc2626':'#94a3b8'}},g.found[z.id]?'✓ '+z.label:'？ 危險 '+(this.HAZARDS.indexOf(z)+1)))),
+    ]);
+  }
+
+  boardDead(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'22px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    if(g.done){
+      return card([
+        h('div',{style:{fontSize:'54px',textAlign:'center'}},'🚚'),
+        h('div',{style:{textAlign:'center',fontSize:'22px',fontWeight:900,marginTop:'6px'}},'完成！'),
+        h('div',{style:{textAlign:'center',fontSize:'40px',fontWeight:900,color:'#d97706',fontFamily:'Fredoka'}},g.score+'/'+this.DEADANGLE.length),
+        h('div',{style:{textAlign:'center',color:'#64748b',marginTop:'4px'}},'記得：大車轉彎有內輪差，遠離右側與死角！'),
+        h('button',{onClick:()=>this.startGame('deadangle'),style:{display:'block',margin:'18px auto 0',border:'none',background:'#d97706',color:'#fff',borderRadius:'14px',padding:'12px 26px',fontWeight:800,cursor:'pointer'}},'再玩一次'),
+      ]);
+    }
+    const r=this.DEADANGLE[g.round];
+    const scene=h('svg',{viewBox:'0 0 100 66',style:{width:'100%',borderRadius:'16px',display:'block',marginTop:'12px'}},[
+      h('rect',{x:0,y:0,width:100,height:66,fill:'#e5e7eb'}),
+      h('path',{d:'M20 66 L20 30 Q20 20 40 20 L100 20 L100 46 L46 46 Q20 46 20 66',fill:'#cbd5e1'}),
+      // truck (turning right)
+      h('g',null,[h('rect',{x:40,y:22,width:30,height:16,rx:1.5,fill:'#f59e0b'}),h('rect',{x:64,y:25,width:10,height:13,fill:'#fbbf24'}),h('circle',{cx:46,cy:39,r:3,fill:'#1f2937'}),h('circle',{cx:64,cy:39,r:3,fill:'#1f2937'}),h('path',{d:'M74 30 l6 4 l-6 4',stroke:'#ef4444',strokeWidth:1.5,fill:'none'})]),
+      ...r.zones.map((z,k)=>h('g',{key:k,onClick:()=>this.deadAnswer(z),style:{cursor:g.fb?'default':'pointer'}},[
+        h('circle',{cx:z.x,cy:z.y,r:6,fill:(g.fb? (z.safe?'#22c55e':'#ef4444'):'#2563eb')+'cc',stroke:'#fff',strokeWidth:1}),
+        h('text',{x:z.x,y:z.y+2,fontSize:6,fontWeight:900,textAnchor:'middle',fill:'#fff',style:{pointerEvents:'none'}},String.fromCharCode(65+k)),
+      ])),
+    ]);
+    return card([
+      h('div',{style:{display:'flex',justifyContent:'space-between',color:'#64748b',fontWeight:800}},[h('span',null,'第 '+(g.round+1)+'/'+this.DEADANGLE.length+' 題'),h('span',{style:{color:'#d97706'}},'答對 '+g.score)]),
+      h('div',{style:{fontWeight:800,fontSize:'16.5px',marginTop:'8px',lineHeight:1.5}},r.q),
+      scene,
+      h('div',{style:{display:'flex',flexDirection:'column',gap:'8px',marginTop:'12px'}},r.zones.map((z,k)=>h('button',{key:k,disabled:!!g.fb,onClick:()=>this.deadAnswer(z),style:{border:'2px solid #e2e8f0',background:'#f8fafc',borderRadius:'12px',padding:'12px',fontWeight:700,textAlign:'left',cursor:g.fb?'default':'pointer'}},String.fromCharCode(65+k)+'. '+z.label))),
+      g.fb ? h('div',{style:{marginTop:'12px',background:g.fb.safe?'#ecfdf5':'#fef2f2',border:'1px solid '+(g.fb.safe?'#a7f3d0':'#fecaca'),borderRadius:'12px',padding:'14px',fontWeight:700,color:g.fb.safe?'#059669':'#dc2626'}},(g.fb.safe?'✓ 安全！':'✗ 危險！')+' '+g.fb.why) : null,
+    ]);
+  }
+
+  boardAdv(h,g){
+    const card=(c)=>h('div',{style:{background:'#fff',borderRadius:'24px',padding:'26px',boxShadow:'0 20px 44px -26px rgba(30,41,59,.5)',border:'1px solid #eef2f7'}},c);
+    const node=this.ADVENTURE[g.node];
+    if(node.end){
+      return card([
+        h('div',{style:{fontSize:'56px',textAlign:'center'}},node.ok?'🎉':'⚠️'),
+        h('div',{style:{fontSize:'17px',lineHeight:1.8,marginTop:'10px',textAlign:'center',color:node.ok?'#065f46':'#7f1d1d',fontWeight:700}},node.text),
+        h('button',{onClick:()=>this.advRestart(),style:{display:'block',margin:'20px auto 0',border:'none',background:node.ok?'#10b981':'#ef4444',color:'#fff',borderRadius:'14px',padding:'13px 28px',fontWeight:800,fontSize:'15px',cursor:'pointer'}},node.ok?'再玩一次':'重新挑戰'),
+      ]);
+    }
+    return card([
+      h('div',{style:{fontSize:'40px',textAlign:'center'}},'🗺️'),
+      h('div',{style:{fontSize:'18px',fontWeight:700,lineHeight:1.7,marginTop:'10px',textAlign:'center'}},node.text),
+      h('div',{style:{display:'flex',flexDirection:'column',gap:'12px',marginTop:'22px'}},node.choices.map((c,k)=>h('button',{key:k,onClick:()=>this.advChoose(c.next),style:{border:'2px solid #d1fae5',background:'#f0fdf4',color:'#065f46',borderRadius:'14px',padding:'16px 18px',fontSize:'15.5px',fontWeight:700,textAlign:'left',cursor:'pointer',lineHeight:1.5},'style-hover':{}},'▸ '+c.label))),
+    ]);
+  }
+
+  // ---- AI assistant ----
+  async sendChat(preset){
+    const text = (typeof preset==='string' ? preset : this.state.chatInput).trim();
+    if(!text || this.state.chatLoading) return;
+    this.sound('click');
+    const chat=[...this.state.chat, {role:'user', content:text}];
+    this.setState({ chat, chatInput:'', chatLoading:true }, ()=>this.persist());
+    this.log('🤖', `向 AI 提問：${text.slice(0,30)}`);
+    const sys='你是「楊梅高中交通安全學習網」的 AI 小助手，服務對象是台灣高中一年級學生。請用繁體中文、親切鼓勵、清楚易懂的方式回答與交通安全、交通法規、行人／自行車／機車安全相關的問題。回答簡潔（150字內為佳），必要時分點。若問題與交通安全無關，友善地把話題帶回交通安全學習。';
+    try{
+      const msgs=chat.slice(-8).map(m=>({role:m.role, content:m.content}));
+      const reply=await window.claude.complete({ system:sys, messages:msgs, max_tokens:600 });
+      this.setState({ chat:[...chat, {role:'assistant', content:reply||'抱歉，我沒有想法，換個問法試試？'}], chatLoading:false }, ()=>this.persist());
+    }catch(e){
+      this.setState({ chat:[...chat, {role:'assistant', content:'抱歉，暫時無法回答（可能是網路或額度限制），請稍後再試。'}], chatLoading:false }, ()=>this.persist());
+    }
+  }
+
+  // ---- downloads ----
+  download(name, text, type){
+    try{
+      const blob=new Blob([text], {type:type||'text/plain;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },100);
+    }catch(e){}
+  }
+  downloadHistory(){
+    this.sound('click');
+    const f=this.state.form;
+    const readNames=this.UNITS.filter((u,i)=>this.state.unitsRead[i]).map(u=>u.title);
+    let t=`楊梅高中交通安全學習網 — 學習歷程\n`;
+    t+=`====================================\n`;
+    t+=`班級：${f.klass}　座號：${f.seat}　姓名：${f.name}\n`;
+    t+=`下載時間：${this.now()}\n\n`;
+    t+=`【教材閱讀】已完成 ${readNames.length}/10 單元\n`;
+    readNames.forEach(n=>t+=`  ✓ ${n}\n`);
+    t+=`\n【遊戲成果】\n`;
+    this.GAMES.forEach(g=>{ const s=this.state.gameScores[g.id]; t+=`  ${g.title}：${s?s.label+'（'+s.time+'）':'未挑戰'}\n`; });
+    t+=`\n【測驗成績】${this.state.quizDone?this.state.quizCorrect+'/10 題答對':'未作答'}\n`;
+    t+=`\n【AI 問答紀錄】\n`;
+    this.state.chat.forEach(m=>t+=`  ${m.role==='user'?'我':'助手'}：${m.content}\n`);
+    t+=`\n【活動時間軸】\n`;
+    this.state.history.slice().reverse().forEach(e=>t+=`  ${e.time}  ${e.title}\n`);
+    this.download(`交通安全學習歷程_${f.klass}_${f.seat}_${f.name}.txt`, t);
+    this.log('⬇️','下載學習歷程');
+  }
+  downloadJSON(){
+    this.sound('click');
+    const data={ student:this.state.form, unitsRead:this.state.unitsRead, gameScores:this.state.gameScores, quizDone:this.state.quizDone, quizCorrect:this.state.quizCorrect, chat:this.state.chat, history:this.state.history, exportedAt:this.now() };
+    this.download(`交通安全學習資料_${this.state.form.name}.json`, JSON.stringify(data,null,2), 'application/json');
+  }
+  downloadChat(){
+    this.sound('click');
+    if(this.state.chat.length===0){ return; }
+    let t=`AI 交通安全小助手 對話紀錄\n班級：${this.state.form.klass}　座號：${this.state.form.seat}　姓名：${this.state.form.name}\n時間：${this.now()}\n\n`;
+    this.state.chat.forEach(m=>t+=`${m.role==='user'?'我':'小助手'}：${m.content}\n\n`);
+    this.download(`AI對話紀錄_${this.state.form.name}.txt`, t);
+    this.log('⬇️','下載 AI 對話紀錄');
+  }
+  clearHistory(){ this.sound('click'); if(confirm('確定要清除所有活動紀錄嗎？（不會刪除你的閱讀進度與成績）')){ this.setState({history:[]}, ()=>this.persist()); } }
+
+  // ---- submit to GAS ----
+  async submitToSheet(){
+    if(!this.state.quizDone || this.state.submitBusy) return;
+    if(this.GAS_URL.indexOf('XXXXXXX')>=0){
+      this.setState({ submitMsg:'尚未設定試算表網址（請老師把 GAS 網址填入程式）' });
+      return;
+    }
+    this.sound('click');
+    this.setState({ submitBusy:true, submitMsg:'上傳中…' });
+    const f=this.state.form;
+    const payload={ datetime:this.now(), klass:f.klass, seat:f.seat, name:f.name, correct:this.state.quizCorrect, total:this.QUIZ.length };
+    try{
+      await fetch(this.GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload) });
+      this.sound('win');
+      this.setState({ submitBusy:false, submitMsg:'✓ 上傳成功！成績已送出', submitted:true }, ()=>this.persist());
+      this.log('📤', `上傳成績到試算表：${this.state.quizCorrect}/10`);
+    }catch(e){
+      this.setState({ submitBusy:false, submitMsg:'上傳失敗，請檢查網路或稍後再試' });
+    }
+  }
+}
+</script>
+</body>
+</html>
